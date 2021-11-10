@@ -6,29 +6,23 @@ library TokenCount {
         
         int precision = int(_tokenADecimals) + int(_tokenBDecimals) - int(_decimals); 
         
-   
         if(precision >= 0){
             if(!_isBuy){
-                return _amount * _price / (10 **uint(precision));
+                return _amount * _price * (10 **uint(precision));
             }else {
                 return _amount *  (10 **uint(precision)) / _price;
-                
             }   
         }else {
             precision *= -1;
-            
             if(!_isBuy){
                 return _amount * _price / (10**uint(precision));
             }else {
-                return _amount * (10**uint(precision)) / _price; 
+                return _amount / (10**uint(precision)) / _price; 
             }
 
         }
 
     }
-
-
-
 }    
 
 

@@ -18,7 +18,7 @@
     "@typechain/hardhat": "^3.0.0",
     "@types/chai": "^4.2.22",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.11.6",
+    "@types/node": "^16.11.7",
     "chai": "^4.3.4",
     "deploy": "^1.0.3",
     "eslint": "^8.1.0",

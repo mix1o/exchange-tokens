@@ -33,7 +33,6 @@ contract TokenExchange{
         
     }
 
-
     function updatePrice(uint _price) public onlyOwner {
         price = _price;
     }
@@ -41,7 +40,7 @@ contract TokenExchange{
     function updateDecimals(uint _decimals) public onlyOwner {
         decimals = _decimals;
     }
-
+    
     function deposit(address _tokenAddress, uint _amount) public onlyOwner {
         require(_amount >= 0);
         IERC20(_tokenAddress).transferFrom(msg.sender, address(this), _amount);

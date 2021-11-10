@@ -27,24 +27,26 @@ describe("TokenCountMock", async () => {
   it.only("count function", async () => {
     expect(
       (await tokenCountMock.mockCount(100, 200, 3, false, 2, 2)).toString()
-    ).to.be.equal("2000");
+    ).to.be.equal("200000");
     expect(
       (await tokenCountMock.mockCount(2000000, 200, 2, false, 4, 2)).toString()
-    ).to.be.equal("40000");
+    ).to.be.equal("4000000000000");
     expect(
       (await tokenCountMock.mockCount(3350, 456, 2, false, 2, 3)).toString()
-    ).to.be.equal("1527");
+    ).to.be.equal("1527600000");
     expect(
       (await tokenCountMock.mockCount(1000, 200, 2, true, 2, 3)).toString()
     ).to.be.equal("5000");
     expect(
       (await tokenCountMock.mockCount(1000, 2000, 3, true, 3, 2)).toString()
     ).to.be.equal("50");
+
     expect(
       (await tokenCountMock.mockCount(10000, 2000, 8, false, 3, 2)).toString()
     ).to.be.equal("20000");
+
     expect(
       (await tokenCountMock.mockCount(10000, 2000, 8, true, 3, 2)).toString()
-    ).to.be.equal("5000");
+    ).to.be.equal("0");
   });
 });
