@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "solhint": "./node_modules/.bin/solhint -f table contracts/**/*.sol",
+    "prettier:solidity": "./node_modules/.bin/prettier --write contracts/**/*.sol"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +28,10 @@
     "eslint": "^8.1.0",
     "hardhat": "^2.6.7",
     "hardhat-deploy-ethers": "^0.3.0-beta.11",
+    "prettier": "^2.4.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
     "solhint": "^3.3.6",
+    "solhint-plugin-prettier": "^0.0.5",
     "ts-node": "^10.4.0",
     "typechain": "^6.0.2",
     "typescript": "^4.4.4"
