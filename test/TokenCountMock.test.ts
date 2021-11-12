@@ -24,7 +24,7 @@ describe("TokenCountMock", async () => {
     ).deploy();
   });
 
-  it.only("count function", async () => {
+  it("countExchangedTokens function", async () => {
     expect(
       (await tokenCountMock.mockCount(100, 200, 3, false, 2, 2)).toString()
     ).to.be.equal("200000");
