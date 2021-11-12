@@ -24,29 +24,53 @@ describe("TokenCountMock", async () => {
     ).deploy();
   });
 
-  it("countExchangedTokens function", async () => {
-    expect(
-      (await tokenCountMock.mockCount(100, 200, 3, false, 2, 2)).toString()
-    ).to.be.equal("200000");
-    expect(
-      (await tokenCountMock.mockCount(2000000, 200, 2, false, 4, 2)).toString()
-    ).to.be.equal("4000000000000");
-    expect(
-      (await tokenCountMock.mockCount(3350, 456, 2, false, 2, 3)).toString()
-    ).to.be.equal("1527600000");
-    expect(
-      (await tokenCountMock.mockCount(1000, 200, 2, true, 2, 3)).toString()
-    ).to.be.equal("5000");
-    expect(
-      (await tokenCountMock.mockCount(1000, 2000, 3, true, 3, 2)).toString()
-    ).to.be.equal("50");
+  describe("isBuy", async () => {
+    it("decimals > 0 big amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(100000, 200, 2, true, 2, 3)).toString()
+      ).to.be.equal("500000");
+    });
+    it("decimals > 0 small amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(1000, 2000, 3, true, 3, 2)).toString()
+      ).to.be.equal("50");
+    });
+    it("decimals < 0 big amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(10000, 100, 6, true, 3, 2)).toString()
+      ).to.be.equal("10");
+    });
+    it("decimals < 0 small amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(1000, 3, 5, true, 1, 2)).toString()
+      ).to.be.equal("3");
+    });
+  });
 
-    expect(
-      (await tokenCountMock.mockCount(10000, 2000, 8, false, 3, 2)).toString()
-    ).to.be.equal("20000");
+  describe("isSell", async () => {
+    it("decimals > 0 big amount", async () => {
+      expect(
+        (
+          await tokenCountMock.mockCount(2000000, 200, 2, false, 4, 2)
+        ).toString()
+      ).to.be.equal("4000000000000");
+    });
+    it("decimals > 0 small amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(100, 200, 3, false, 2, 2)).toString(),
+        "small amount"
+      ).to.be.equal("200000");
+    });
 
-    expect(
-      (await tokenCountMock.mockCount(10000, 2000, 8, true, 3, 2)).toString()
-    ).to.be.equal("0");
+    it("decimals < 0 big amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(500200, 200, 9, false, 2, 3)).toString()
+      ).to.be.equal("10004");
+    });
+    it("decimals < 0 small amount", async () => {
+      expect(
+        (await tokenCountMock.mockCount(3350, 456, 9, false, 2, 3)).toString()
+      ).to.be.equal("152");
+    });
   });
 });
