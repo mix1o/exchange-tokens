@@ -2,30 +2,25 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./ERC20PresetMinterPauser.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import './TokenCount.sol';
-import {TokenCount} from './TokenCount.sol';
+import "./TestToken.sol";
 
-contract TokenExchange{
-   
-    address public owner;
+contract TokenExchange is Ownable{
+
     address tokenAAddress;
     address tokenBAddress;
     uint public price;
-    uint public decimals = 18;
-
+    uint public priceDecimals = 2;
+    using SafeERC20 for IERC20;
 
     constructor(address _tokenAAddress,address _tokenBAddress,uint _price){
-        owner = msg.sender;
         price = _price;
         tokenAAddress = _tokenAAddress;
         tokenBAddress = _tokenBAddress;
     }
 
-    modifier onlyOwner {
-        require(msg.sender == owner, "Only owner");
-        _;
-    }
 
     modifier contractRegistered(address _tokenAddress) {
         require(tokenAAddress == _tokenAddress || tokenBAddress == _tokenAddress, "Invalid address");
@@ -33,38 +28,34 @@ contract TokenExchange{
         
     }
 
-    function updatePrice(uint _price) public onlyOwner {
+    function updatePrice(uint _price,uint _priceDecimals) public onlyOwner {
         price = _price;
-    }
-
-    function updateDecimals(uint _decimals) public onlyOwner {
-        decimals = _decimals;
+        priceDecimals = _priceDecimals;
     }
     
     function deposit(address _tokenAddress, uint _amount) public onlyOwner {
-        require(_amount >= 0);
-        IERC20(_tokenAddress).transferFrom(msg.sender, address(this), _amount);
+        require(_amount >= 0,"Amount must be greater than 0");
+        IERC20(_tokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
+    }
+
+    function _transferToken(address _tokenAddress, address _tokenExchanged, uint _tokens, uint _amount) internal {
+            require(IERC20(_tokenExchanged).balanceOf(address(this)) >= _tokens, "Not enough tokens in deposit to exchange");
+            IERC20(_tokenAddress).safeTransferFrom(msg.sender,address(this), _amount);
+            IERC20(_tokenExchanged).safeTransfer(msg.sender, _tokens);
     }
 
     function exchange(address _tokenAddress, uint _amount) public contractRegistered(_tokenAddress) {
         
         uint tokens;
         if(_tokenAddress == tokenAAddress){
-             
-            tokens = TokenCount.count(_amount,price,decimals,false,ERC20PresetMinterPauser(tokenAAddress).decimals(),ERC20PresetMinterPauser(tokenBAddress).decimals());
-            
-            require(IERC20(tokenBAddress).balanceOf(address(this)) >= tokens);
-
-            require(IERC20(_tokenAddress).transferFrom(msg.sender,address(this),_amount));
-            require(IERC20(tokenBAddress).transfer(msg.sender, tokens));
-         
+            tokens = TokenCount.countExchangedTokens(_amount,price,priceDecimals,false,TestToken(tokenAAddress).decimals(),TestToken(tokenBAddress).decimals());
+    
+            _transferToken(_tokenAddress, tokenBAddress, tokens, _amount);
 
         }else {
-           
-            tokens = TokenCount.count(_amount,price,decimals,true,ERC20PresetMinterPauser(tokenAAddress).decimals(),ERC20PresetMinterPauser(tokenBAddress).decimals());
+            tokens = TokenCount.countExchangedTokens(_amount,price,priceDecimals,true,TestToken(tokenAAddress).decimals(),TestToken(tokenBAddress).decimals());
 
-            require(IERC20(_tokenAddress).transferFrom(msg.sender,address(this),_amount)); 
-            require(IERC20(tokenAAddress).transfer(msg.sender, tokens));
+            _transferToken(_tokenAddress, tokenAAddress, tokens, _amount);
         }
     }
     
