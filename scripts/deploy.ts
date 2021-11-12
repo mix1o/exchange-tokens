@@ -1,41 +1,23 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import {
-  ERC20PresetMinterPauser__factory,
-  ERC20PresetMinterPauser,
-} from "../typechain-types";
+import { TestToken__factory, TestToken } from "../typechain-types";
 
-let tokenA: ERC20PresetMinterPauser, tokenB: ERC20PresetMinterPauser;
+let tokenA: TestToken, tokenB: TestToken;
 let owner: SignerWithAddress;
 
 const main = async () => {
   [owner] = await ethers.getSigners();
 
-  tokenA = await new ERC20PresetMinterPauser__factory(owner).deploy(
-    "Token A",
-    "TKA",
-    18
-  );
+  tokenA = await new TestToken__factory(owner).deploy("Token A", "TKA", 18);
 
-  tokenB = await new ERC20PresetMinterPauser__factory(owner).deploy(
-    "Token B",
-    "TKB",
-    18
-  );
+  tokenB = await new TestToken__factory(owner).deploy("Token B", "TKB", 18);
 
   const TokenExchange = await ethers.getContractFactory("TokenExchange");
-  const TokenCount = await ethers.getContractFactory("TokenCount");
   const MockTokenCount = await ethers.getContractFactory("MockTokenCount");
+  // const TestToken = await ethers.getContractFactory("TestToken");
 
-  const hardhatTokenExchange = await TokenExchange.deploy(
-    tokenA.address,
-    tokenB.address,
-    1000
-  );
-  const hardhatTokenCount = await TokenCount.deploy();
-  const hardhatMockTokenCount = await MockTokenCount.deploy();
-
-  console.log(hardhatTokenExchange.address);
+  await TokenExchange.deploy(tokenA.address, tokenB.address, 1000);
+  await MockTokenCount.deploy();
 };
 
 main()
