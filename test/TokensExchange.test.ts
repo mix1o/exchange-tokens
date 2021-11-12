@@ -49,7 +49,7 @@ describe("TokenExchange contract", async () => {
     expect(await tokenExchange.owner()).to.equal(owner.address);
     expect((await tokenExchange.price()).toString()).to.equal("1000");
 
-    await tokenExchange.updatePrice(2000, 17, { from: owner.address });
+    await tokenExchange.updatePrice(2000, 17);
 
     expect((await tokenExchange.price()).toString()).to.equal("2000");
   });
