@@ -6,7 +6,7 @@ contract MockedTokenExchange {
   function mockCount(
     uint256 _amount,
     uint256 _price,
-    uint256 _decimals,
+    uint256 _priceDecimals,
     bool _isBuy,
     uint256 _tokenADecimals,
     uint256 _tokenBDecimals
@@ -14,7 +14,7 @@ contract MockedTokenExchange {
     uint256 tokens = TokenCount.countExchangedTokens(
       _amount,
       _price,
-      _decimals,
+      _priceDecimals,
       _isBuy,
       _tokenADecimals,
       _tokenBDecimals

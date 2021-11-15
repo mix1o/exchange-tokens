@@ -44,7 +44,7 @@ contract TokenExchange is Ownable {
     IERC20(_tokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
   }
 
-  function _transferToken(
+  function _transferTokens(
     address _tokenAddress,
     address _tokenExchanged,
     uint256 _tokens,
@@ -73,7 +73,7 @@ contract TokenExchange is Ownable {
         TestToken(tokenBAddress).decimals()
       );
 
-      _transferToken(_tokenAddress, tokenBAddress, tokens, _amount);
+      _transferTokens(_tokenAddress, tokenBAddress, tokens, _amount);
     } else {
       tokens = TokenCount.countExchangedTokens(
         _amount,
@@ -84,7 +84,7 @@ contract TokenExchange is Ownable {
         TestToken(tokenBAddress).decimals()
       );
 
-      _transferToken(_tokenAddress, tokenAAddress, tokens, _amount);
+      _transferTokens(_tokenAddress, tokenAAddress, tokens, _amount);
     }
   }
 }
