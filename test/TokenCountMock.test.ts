@@ -24,15 +24,7 @@ describe("TokenCountMock", async () => {
       owner
     ).deploy();
   });
-  type ExchangeValues = {
-    amount: number;
-    price: number;
-    priceDecimals: number;
-    isBuy: boolean;
-    tokenADecimals: number;
-    tokenBDecimals: number;
-    expectedValue: string;
-  };
+
   describe("function countTokenExchange", () => {
     itEach(
       `testing with different values`,
@@ -62,7 +54,7 @@ describe("TokenCountMock", async () => {
           isBuy: true,
           tokenADecimals: 3,
           tokenBDecimals: 2,
-          rumblefish@rumblefish-GL65-9SC:~/cw1$ clear
+          expectedValue: "10",
         },
         {
           amount: 1000,
