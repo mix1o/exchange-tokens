@@ -62,7 +62,7 @@ describe("TokenCountMock", async () => {
           isBuy: true,
           tokenADecimals: 3,
           tokenBDecimals: 2,
-          expectedValue: "10",
+          rumblefish@rumblefish-GL65-9SC:~/cw1$ clear
         },
         {
           amount: 1000,
