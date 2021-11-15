@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+import { itEach } from "mocha-it-each";
 import { expect } from "chai";
 import {
   MockedTokenExchange,
@@ -23,54 +24,106 @@ describe("TokenCountMock", async () => {
       owner
     ).deploy();
   });
-
-  describe("isBuy", async () => {
-    it("decimals > 0 big amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(100000, 200, 2, true, 2, 3)).toString()
-      ).to.be.equal("500000");
-    });
-    it("decimals > 0 small amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(1000, 2000, 3, true, 3, 2)).toString()
-      ).to.be.equal("50");
-    });
-    it("decimals < 0 big amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(10000, 100, 6, true, 3, 2)).toString()
-      ).to.be.equal("10");
-    });
-    it("decimals < 0 small amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(1000, 3, 5, true, 1, 2)).toString()
-      ).to.be.equal("3");
-    });
-  });
-
-  describe("isSell", async () => {
-    it("decimals > 0 big amount", async () => {
-      expect(
-        (
-          await tokenCountMock.mockCount(2000000, 200, 2, false, 4, 2)
-        ).toString()
-      ).to.be.equal("4000000000000");
-    });
-    it("decimals > 0 small amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(100, 200, 3, false, 2, 2)).toString(),
-        "small amount"
-      ).to.be.equal("200000");
-    });
-
-    it("decimals < 0 big amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(500200, 200, 9, false, 2, 3)).toString()
-      ).to.be.equal("10004");
-    });
-    it("decimals < 0 small amount", async () => {
-      expect(
-        (await tokenCountMock.mockCount(3350, 456, 9, false, 2, 3)).toString()
-      ).to.be.equal("152");
-    });
+  type ExchangeValues = {
+    amount: number;
+    price: number;
+    priceDecimals: number;
+    isBuy: boolean;
+    tokenADecimals: number;
+    tokenBDecimals: number;
+    expectedValue: string;
+  };
+  describe("function countTokenExchange", () => {
+    itEach(
+      `testing with different values`,
+      [
+        {
+          amount: 100000,
+          price: 200,
+          priceDecimals: 2,
+          isBuy: true,
+          tokenADecimals: 2,
+          tokenBDecimals: 3,
+          expectedValue: "500000",
+        },
+        {
+          amount: 1000,
+          price: 2000,
+          priceDecimals: 3,
+          isBuy: true,
+          tokenADecimals: 3,
+          tokenBDecimals: 2,
+          expectedValue: "50",
+        },
+        {
+          amount: 10000,
+          price: 100,
+          priceDecimals: 6,
+          isBuy: true,
+          tokenADecimals: 3,
+          tokenBDecimals: 2,
+          expectedValue: "10",
+        },
+        {
+          amount: 1000,
+          price: 3,
+          priceDecimals: 5,
+          isBuy: true,
+          tokenADecimals: 1,
+          tokenBDecimals: 2,
+          expectedValue: "3",
+        },
+        {
+          amount: 2000000,
+          price: 200,
+          priceDecimals: 2,
+          isBuy: false,
+          tokenADecimals: 4,
+          tokenBDecimals: 2,
+          expectedValue: "4000000000000",
+        },
+        {
+          amount: 100,
+          price: 200,
+          priceDecimals: 3,
+          isBuy: false,
+          tokenADecimals: 2,
+          tokenBDecimals: 2,
+          expectedValue: "200000",
+        },
+        {
+          amount: 500200,
+          price: 200,
+          priceDecimals: 9,
+          isBuy: false,
+          tokenADecimals: 2,
+          tokenBDecimals: 3,
+          expectedValue: "10004",
+        },
+        {
+          amount: 3350,
+          price: 456,
+          priceDecimals: 9,
+          isBuy: false,
+          tokenADecimals: 2,
+          tokenBDecimals: 3,
+          expectedValue: "152",
+        },
+      ],
+      async element => {
+        expect(
+          (
+            await tokenCountMock.mockCount(
+              element.amount,
+              element.price,
+              element.priceDecimals,
+              element.isBuy,
+              element.tokenADecimals,
+              element.tokenBDecimals
+            )
+          ).toString()
+        ).to.be.equal(element.expectedValue);
+      }
+    );
   });
 });
